@@ -1,0 +1,40 @@
+name: statix lint
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/lint.yml
+    paths-ignore:
+      - '.github/**'
+      - '**.md'
+  pull_request_target:
+    paths-ignore:
+      - '.github/**'
+      - '**.md'
+
+jobs:
+  lint:
+    runs-on: unbuntu-latest
+    outputs:
+      lint-success: ${{ steps.build-result.outputs.success }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: install nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: run statix linter
+        run:
+          echo "linting flake"
+          if nix run --extra-experimental-features 'nix-command flakes' nixpkgs#statix -- check .; then
+            echo "success=true" >> $GITHUB_ENV
+          else
+            echo "Lint failed, listing flake.lock for debugging:"
+            cat flake.log
+            echo "success=false" >> $GITHUB_ENV
+            exit 1
+          fi
+      - name: determinate lint result
+        id: build-result
+        run: echo "success=${{ env.success }}" >> $GITHUB_OUTPUT
