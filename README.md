@@ -1,5 +1,5 @@
 # wallseq
 Wallpaper sequencer for nixos
 
-![GitHub License](https://img.shields.io/github/license/felipe-9/wallseq)
+![GitHub License](https://img.shields.io/github/license/Felipe-9/wallseq)
 
