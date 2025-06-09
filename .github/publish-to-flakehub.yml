@@ -1,7 +1,9 @@
 on:
   push:
+    branch:
+      - "main"
     tags:
-      - "v*.*.*"
+      - "v[0-9]+.*"
 
 jobs:
   flakehub-publish:
@@ -11,7 +13,11 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - uses: DeterminateSystems/determinate-nix-action@v3
+        with:
+          ref: ${{ inputs.tag) }}
+      - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/flakehub-push@main
         with:
           visibility: public
+          rolling: false
+          tag: ${{ inputs.tag }}
